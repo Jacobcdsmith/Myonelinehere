@@ -90,8 +90,9 @@ export default function App() {
                 Jacob C. Smith
               </h1>
               <p className="text-xl text-violet-200/70 max-w-2xl mb-12 leading-relaxed">
-                Bridging analytics and advanced computing from rural West Virginia. 
-                7 years sales leadership evolved into data engineering, ML research, 
+                Bridging analytics and advanced computing from rural West Virginia.
+                Over a decade of professional experience spanning team leadership (2011-2018)
+                and B2B sales (2018-2024), now focused on data engineering, ML research,
                 and theoretical frameworks—from enterprise dashboards to quantum formulations.
               </p>
               <div className="flex flex-wrap gap-6 text-violet-300/80">
@@ -445,8 +446,8 @@ export default function App() {
                 Professional Journey
               </h2>
               <p className="text-violet-300/70 max-w-2xl mx-auto">
-                7 years of client-facing leadership across
-                sales, account management, and team operations.
+                Over a decade of professional experience across
+                team leadership, sales, and account management (2011-2024).
               </p>
             </div>
             <ExperienceCard
@@ -723,10 +724,10 @@ export default function App() {
                 </div>
                 <div className="text-right">
                   <p className="text-violet-300/70">
-                    Jul 2025 – Oct 2025
+                    Jul 2024 – Oct 2024
                   </p>
                   <p className="text-violet-300/60 text-sm mt-1">
-                    Remote • Completed Oct 2025
+                    Remote • Completed
                   </p>
                 </div>
               </div>
@@ -771,7 +772,7 @@ export default function App() {
                     Data Literacy — DataCamp
                   </p>
                   <p className="text-violet-300/60 text-sm">
-                    Certified Oct 28, 2025 • ID: DL0038972051530
+                    Certified Oct 28, 2024 • ID: DL0038972051530
                   </p>
                 </div>
                 <div className="border-l-2 border-crimson-500 pl-6">
@@ -779,7 +780,7 @@ export default function App() {
                     Python Data Associate — DataCamp
                   </p>
                   <p className="text-violet-300/60 text-sm">
-                    Certified Oct 28, 2025 • ID:
+                    Certified Oct 28, 2024 • ID:
                     PDA0019023690945
                   </p>
                 </div>
@@ -896,8 +897,7 @@ export default function App() {
           </div>
           <div className="pt-6 border-t border-violet-500/30 text-center">
             <p className="text-violet-300/60">
-              Certifications: Data Literacy ID DL0038972051530 •
-              Python Data Associate ID PDA0019023690945
+              Certifications: DataCamp Data Literacy (Oct 2024) • DataCamp Python Data Associate (Oct 2024)
             </p>
           </div>
         </div>
