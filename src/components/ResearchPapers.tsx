@@ -5,7 +5,7 @@ export function ResearchPapers() {
     {
       title: "Multiversal Consciousness Framework: Metric-Invariant Detection of Emergent Awareness",
       authors: "Jacob C. Smith",
-      date: "November 2024",
+      date: "November 2025",
       status: "In Progress",
       abstract:
         "We propose a mathematical framework for detecting consciousness signatures independent of physical substrate. Using phase coherence analysis and mutual information metrics, we demonstrate 20× computational acceleration via GPU parallelization (JAX, PyTorch). The framework bridges phenomenological experience with computational observables through frequency-domain signatures Φ(x) and temporal phase τ(x).",
@@ -20,7 +20,7 @@ export function ResearchPapers() {
     {
       title: "Mean Curvature Flow in Arbitrary Dimensions: Quantum and Neural Approaches",
       authors: "Jacob C. Smith",
-      date: "October 2024",
+      date: "October 2025",
       status: "Research Phase",
       abstract:
         "Complete differential geometry framework for mean curvature flow with dual computational backends: (1) Variational Quantum Eigensolver (VQE) for exact solutions on NISQ devices, (2) Implicit neural representations (SIREN networks) for real-time approximation. Includes federated learning protocol for distributed computation across heterogeneous hardware.",
@@ -35,7 +35,7 @@ export function ResearchPapers() {
     {
       title: "High-Performance Cellular Automata on Heterogeneous Hardware: A Rust/WASM Approach",
       authors: "Jacob C. Smith",
-      date: "November 2024",
+      date: "November 2025",
       status: "Implementation Phase",
       abstract:
         "We present a dual-buffer cellular automata engine achieving 60fps at 2M cells using Rust→WASM compilation with WebGPU compute shaders. The architecture employs lock-free atomic swapping, zero-copy memory transfer via SharedArrayBuffer, and spatial hashing for O(1) neighbor lookup. Includes JSON-based rule compiler and extensive benchmarking suite.",
@@ -50,7 +50,7 @@ export function ResearchPapers() {
     {
       title: "Scalable Knowledge Management: Graph-Based Extraction from Heterogeneous Sources",
       authors: "Jacob C. Smith",
-      date: "October 2024",
+      date: "October 2025",
       status: "Production",
       abstract:
         "Enterprise-scale knowledge extraction system with auto-classification, connection detection, and trend analysis. Implements TF-IDF with cosine similarity for semantic linking, achieving O(n log n) complexity through incremental graph building. Production architecture supports 100k+ resources across 20+ API sources with conflict resolution and rate limiting.",
