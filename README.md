@@ -6,7 +6,7 @@ A modern React application built with Vite, featuring a futuristic UI design.
 
 This project is automatically deployed to GitHub Pages when changes are pushed to the `main` branch.
 
-**Live Site:** [https://jacobcdsmith.github.io/Myonelinehere/](https://jacobcdsmith.github.io/Myonelinehere/)
+**Live Site:** [https://jacobcdsmith.github.io/](https://jacobcdsmith.github.io/)
 
 ### How it Works
 
