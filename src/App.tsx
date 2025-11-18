@@ -24,6 +24,8 @@ import { PerformanceMetrics } from "./components/PerformanceMetrics";
 import { OpenSource } from "./components/OpenSource";
 import { TechnicalStats } from "./components/TechnicalStats";
 import { CellularAutomataShowcase } from "./components/CellularAutomataShowcase";
+import { ConsimShowcase } from "./components/ConsimShowcase";
+import { GitHubAnalysisShowcase } from "./components/GitHubAnalysisShowcase";
 import { FloatingTechBadges } from "./components/FloatingTechBadges";
 import { SystemMonitor } from "./components/SystemMonitor";
 
@@ -90,9 +92,8 @@ export default function App() {
                 Jacob C. Smith
               </h1>
               <p className="text-xl text-violet-200/70 max-w-2xl mb-12 leading-relaxed">
-                Bridging analytics and advanced computing from rural West Virginia.
-                Over a decade of professional experience spanning team leadership (2011-2018)
-                and B2B sales (2018-2024), now focused on data engineering, ML research,
+                Bridging analytics and advanced computing from rural West Virginia. 
+                7 years sales leadership evolved into data engineering, ML research, 
                 and theoretical frameworks—from enterprise dashboards to quantum formulations.
               </p>
               <div className="flex flex-wrap gap-6 text-violet-300/80">
@@ -248,32 +249,16 @@ export default function App() {
             {/* Cellular Automata Showcase */}
             <CellularAutomataShowcase />
 
-            <ProjectCard
-              title="GitHub Repository Language Analysis — Capstone"
-              description="200k+ repository records analyzing 12 programming languages with enterprise-grade data pipeline. Built interactive React/TypeScript dashboard with Tailwind, deployed via Netlify CI/CD. Comprehensive analysis via Jupyter notebooks with 3D visualizations, correlation studies, and statistical modeling. Deliverables include PowerPoint presentation, PDF report, and production-ready web application."
-              image="https://images.unsplash.com/photo-1759661966728-4a02e3c6ed91?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkYXRhJTIwdmlzdWFsaXphdGlvbiUyMGRhc2hib2FyZHxlbnwxfHx8fDE3NjIwMjk2MTB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-              links={[
-                {
-                  label: "Capstone",
-                  url: "https://www.notion.so/GitHub-Repository-Language-Analysis-Capstone-295336891f3680038aa3c0a8246b959b?pvs=21",
-                },
-                {
-                  label: "Dashboard Spec",
-                  url: "https://www.notion.so/GitHub-Language-Dashboard-Spec-v1-Starter-aadbf6ac2b1b42d680eedfdd0e3b47ff?pvs=21",
-                },
-              ]}
-            />
+            {/* CONSIM Showcase */}
+            <ConsimShowcase />
+
+            {/* GitHub Language Analysis Showcase */}
+            <GitHubAnalysisShowcase />
 
             <ProjectCard
               title="Knowledge Management System — Notion Infrastructure"
               description="Enterprise-scale knowledge extraction system with 5 core databases (Master Resource Index, Source Tracker, Topic Taxonomy, Connection Graph, Update Pipeline). Auto-pulls from 20+ data sources including HackerNews, arXiv, GitHub, Medium. Features auto-classification, connection detection, trend analysis, and production-ready architecture supporting 10k-100k resources."
               image="https://images.unsplash.com/photo-1738082956220-a1f20a8632ce?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxrbm93bGVkZ2UlMjBncmFwaCUyMG5ldHdvcmt8ZW58MXx8fHwxNzYyMDg0MDAyfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-            />
-
-            <ProjectCard
-              title="Mean Curvature Flow (MCF) Framework — Advanced Mathematics"
-              description="Complete differential geometry framework with quantum computing formulations (VQE), neural network implementations (SIREN, implicit neural networks), and ML integration. Includes federated learning approaches and real-time WebGPU implementations. Bridges theoretical mathematics with practical computational applications."
-              image="https://images.unsplash.com/photo-1758685734312-5134968399a8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYXRoZW1hdGljYWwlMjBlcXVhdGlvbnMlMjBwaHlzaWNzfGVufDF8fHx8MTc2MjE1OTE0NXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
             />
 
             <ProjectCard
@@ -446,8 +431,8 @@ export default function App() {
                 Professional Journey
               </h2>
               <p className="text-violet-300/70 max-w-2xl mx-auto">
-                Over a decade of professional experience across
-                team leadership, sales, and account management (2011-2024).
+                7 years of client-facing leadership across
+                sales, account management, and team operations.
               </p>
             </div>
             <ExperienceCard
@@ -724,10 +709,10 @@ export default function App() {
                 </div>
                 <div className="text-right">
                   <p className="text-violet-300/70">
-                    Jul 2024 – Oct 2024
+                    Jul 2025 – Oct 2025
                   </p>
                   <p className="text-violet-300/60 text-sm mt-1">
-                    Remote • Completed
+                    Remote • Completed Oct 2025
                   </p>
                 </div>
               </div>
@@ -772,7 +757,7 @@ export default function App() {
                     Data Literacy — DataCamp
                   </p>
                   <p className="text-violet-300/60 text-sm">
-                    Certified Oct 28, 2024 • ID: DL0038972051530
+                    Certified Oct 28, 2025 • ID: DL0038972051530
                   </p>
                 </div>
                 <div className="border-l-2 border-crimson-500 pl-6">
@@ -780,7 +765,7 @@ export default function App() {
                     Python Data Associate — DataCamp
                   </p>
                   <p className="text-violet-300/60 text-sm">
-                    Certified Oct 28, 2024 • ID:
+                    Certified Oct 28, 2025 • ID:
                     PDA0019023690945
                   </p>
                 </div>
@@ -897,7 +882,8 @@ export default function App() {
           </div>
           <div className="pt-6 border-t border-violet-500/30 text-center">
             <p className="text-violet-300/60">
-              Certifications: DataCamp Data Literacy (Oct 2024) • DataCamp Python Data Associate (Oct 2024)
+              Certifications: Data Literacy ID DL0038972051530 •
+              Python Data Associate ID PDA0019023690945
             </p>
           </div>
         </div>

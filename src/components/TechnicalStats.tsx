@@ -6,7 +6,7 @@ export function TechnicalStats() {
       icon: Code,
       label: "Lines of Code",
       value: "150k+",
-      detail: "Production code written (2025)",
+      detail: "Production code written (2024)",
       color: "from-violet-400 to-fuchsia-400",
     },
     {

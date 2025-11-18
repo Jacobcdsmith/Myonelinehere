@@ -39,24 +39,6 @@ export function TechnicalSpecs() {
       ],
     },
     {
-      icon: Zap,
-      title: "MCF Framework",
-      subtitle: "Differential Geometry Engine",
-      stats: [
-        { label: "Dimensions", value: "Arbitrary manifolds" },
-        { label: "Precision", value: "Float64 default" },
-        { label: "Methods", value: "VQE + Neural" },
-        { label: "Backends", value: "WebGPU + CPU" },
-      ],
-      details: [
-        "Implicit neural representation (SIREN)",
-        "Quantum variational eigensolver integration",
-        "Federated learning for distributed computation",
-        "Real-time curvature flow visualization",
-        "Metric-invariant consciousness detection",
-      ],
-    },
-    {
       icon: Code,
       title: "GitHub Analysis Engine",
       subtitle: "200k+ Repository Analytics",

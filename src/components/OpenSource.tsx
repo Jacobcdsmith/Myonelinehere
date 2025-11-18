@@ -47,26 +47,6 @@ export function OpenSource() {
         "O(1) spatial hash neighbor lookup",
       ],
     },
-    {
-      name: "mcf-framework",
-      description:
-        "Mean curvature flow on arbitrary manifolds with quantum (VQE) and neural (SIREN) backends. Real-time WebGPU visualization.",
-      language: "Python/Rust",
-      stats: { stars: "—", forks: "—", issues: "Research" },
-      topics: [
-        "differential-geometry",
-        "quantum-computing",
-        "neural-networks",
-        "webgpu",
-      ],
-      url: "#", // Placeholder
-      highlights: [
-        "Variational quantum eigensolver integration",
-        "Implicit neural representations (SIREN)",
-        "Federated learning protocol",
-        "Multi-backend (GPU/CPU/Quantum)",
-      ],
-    },
   ];
 
   const contributions = [

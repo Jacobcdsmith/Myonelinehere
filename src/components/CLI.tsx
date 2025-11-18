@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Terminal, FileCode, Grid3x3, Zap, Settings, TrendingUp } from 'lucide-react';
+import { Terminal, FileCode, Grid3x3, Zap, Settings, TrendingUp, Cpu, Activity, Database } from 'lucide-react';
 
 interface CommandOutput {
   command: string;
@@ -76,6 +76,11 @@ seo:
     "friction": 0.85
   }
 }`
+        },
+        {
+          name: 'state-snapshot.bin',
+          type: 'file',
+          content: '[Binary state data - 2,073,600 cells × 64 bytes/cell = 126MB]'
         }
       ]
     },
@@ -128,7 +133,14 @@ function parseCommand(input: string): ParsedCommand {
       }
     } else if (part.startsWith('-')) {
       flags[part.slice(1)] = true;
-    } else if (!subcommand && ['init', 'populate', 'build', 'dev', 'deploy', 'analyze', 'grid', 'rule', 'inject', 'step'].includes(part)) {
+    } else if (!subcommand && [
+      'init', 'populate', 'build', 'dev', 'deploy', 'analyze', 
+      'grid', 'rule', 'inject', 'step', 'simulate', 'benchmark', 
+      'profile', 'debug', 'cell', 'region', 'query', 'list', 'show', 
+      'stability', 'entropy', 'performance', 'compile', 'validate', 
+      'load', 'export', 'import', 'get', 'set', 'assign-rule', 'info',
+      'ls', 'cat', 'tree'
+    ].includes(part)) {
       subcommand = part;
     } else {
       args.push(part);
@@ -179,13 +191,14 @@ export function CLI() {
       command: 'system',
       output: (
         <div className="space-y-2">
-          <div className="text-fuchsia-400">╔═══════════════════════════════════════════════════════════╗</div>
-          <div className="text-fuchsia-400">║   JACOB C. SMITH — PORTFOLIO COMMAND CENTER              ║</div>
-          <div className="text-fuchsia-400">╚═══════════════════════════════════════════════════════════╝</div>
+          <div className="text-fuchsia-400">╔══════════════════════════════════════════════════════════════════╗</div>
+          <div className="text-fuchsia-400">║   JACOB C. SMITH — ADVANCED PORTFOLIO COMMAND CENTER           ║</div>
+          <div className="text-fuchsia-400">╚══════════════════════════════════════════════════════════════════╝</div>
           <div className="text-violet-300/80 text-sm mt-3">
-            Systems Online: <span className="text-crimson-400">[Static Site Generator]</span> <span className="text-violet-400">[Cellular Automata Engine]</span>
+            Systems Online: <span className="text-crimson-400">[Static Site Generator]</span> <span className="text-violet-400">[Cellular Automata Engine (Rust/WASM)]</span>
           </div>
-          <div className="text-violet-300/60 text-sm">Type <span className="text-crimson-400">help</span> for available commands</div>
+          <div className="text-violet-300/60 text-sm">WebGPU Compute: <span className="text-fuchsia-400">ENABLED</span> | Memory: <span className="text-fuchsia-400">48MB allocated</span></div>
+          <div className="text-violet-300/60 text-sm">Type <span className="text-crimson-400">help</span> for comprehensive command reference</div>
         </div>
       ),
       timestamp: new Date(),
@@ -210,11 +223,13 @@ export function CLI() {
     const allCommands = [
       'help', 'clear', 'about', 'neofetch',
       'ssg init', 'ssg populate', 'ssg build', 'ssg dev', 'ssg deploy', 'ssg analyze',
-      'ca grid init', 'ca grid step', 'ca grid info', 'ca grid export',
-      'ca rule load', 'ca rule list', 'ca rule validate',
-      'ca inject', 'ca simulate',
-      'fs ls', 'fs cat', 'fs tree', 'fs edit',
-      'project list', 'project show', 'skills', 'experience', 'contact'
+      'ca grid init', 'ca grid step', 'ca grid info', 'ca grid export', 'ca grid import', 'ca grid query',
+      'ca rule load', 'ca rule list', 'ca rule validate', 'ca rule compile',
+      'ca cell set', 'ca cell get', 'ca region get', 'ca region assign-rule',
+      'ca inject', 'ca simulate', 'ca benchmark', 'ca profile', 'ca debug',
+      'ca query stability', 'ca query entropy', 'ca query performance',
+      'fs ls', 'fs cat', 'fs tree',
+      'project list', 'project show'
     ];
     
     if (input.trim()) {
@@ -255,7 +270,7 @@ export function CLI() {
       return null;
     }
 
-    // Help system
+    // Help system - EXPANDED
     if (command === 'help') {
       return (
         <div className="space-y-3">
@@ -281,16 +296,50 @@ export function CLI() {
             <div className="flex items-center gap-2">
               <Grid3x3 className="w-4 h-4 text-violet-400" />
               <span className="text-fuchsia-400">ca</span>
-              <span className="text-violet-300/60 text-sm">— Cellular Automata Engine</span>
+              <span className="text-violet-300/60 text-sm">— Cellular Automata Engine (Rust→WASM | WebGPU)</span>
             </div>
             <div className="pl-6 text-xs text-violet-300/80 space-y-0.5">
-              <div><span className="text-crimson-400">grid init</span> [width] [height] - Create grid</div>
-              <div><span className="text-crimson-400">grid step</span> [--count=10] - Run simulation steps</div>
-              <div><span className="text-crimson-400">grid info</span> - Display grid statistics</div>
-              <div><span className="text-crimson-400">rule load</span> [file] - Load rule configuration</div>
-              <div><span className="text-crimson-400">rule validate</span> [file] - Validate rules</div>
-              <div><span className="text-crimson-400">inject</span> [x] [y] [energy] - Inject energy</div>
-              <div><span className="text-crimson-400">simulate</span> [--fps=60] - Start real-time sim</div>
+              <div className="text-violet-400 mt-1 flex items-center gap-1">
+                <Database className="w-3 h-3" />
+                <span>Grid Operations:</span>
+              </div>
+              <div><span className="text-crimson-400">grid init</span> [width] [height] [--gpu] - Initialize CA grid (dual-buffer)</div>
+              <div><span className="text-crimson-400">grid step</span> [--count=N] [--async] - Run N simulation steps</div>
+              <div><span className="text-crimson-400">grid info</span> - Display grid statistics & memory layout</div>
+              <div><span className="text-crimson-400">grid export</span> [file] - Export binary state snapshot (time-travel)</div>
+              <div><span className="text-crimson-400">grid import</span> [file] - Import state from snapshot</div>
+              <div><span className="text-crimson-400">grid query</span> - Query grid status, changed cells & metrics</div>
+              
+              <div className="text-violet-400 mt-1 flex items-center gap-1">
+                <Settings className="w-3 h-3" />
+                <span>Rule Engine:</span>
+              </div>
+              <div><span className="text-crimson-400">rule load</span> [file] - Load & compile JSON→Rust transitions</div>
+              <div><span className="text-crimson-400">rule validate</span> [file] - Validate rule schema & dependencies</div>
+              <div><span className="text-crimson-400">rule compile</span> - Show compiled transition table</div>
+              <div><span className="text-crimson-400">rule list</span> - List all loaded rules with IDs</div>
+              
+              <div className="text-violet-400 mt-1 flex items-center gap-1">
+                <Cpu className="w-3 h-3" />
+                <span>Cell & Region Operations:</span>
+              </div>
+              <div><span className="text-crimson-400">cell set</span> [x] [y] [state] - Set individual cell state</div>
+              <div><span className="text-crimson-400">cell get</span> [x] [y] - Get cell data (64-byte struct)</div>
+              <div><span className="text-crimson-400">region get</span> [x] [y] [w] [h] - Get region as Float32Array</div>
+              <div><span className="text-crimson-400">region assign-rule</span> [rule_id] [x] [y] [w] [h] - Assign rule to region</div>
+              <div><span className="text-crimson-400">inject</span> [x] [y] [energy] [--radius=N] - Inject energy with wave propagation</div>
+              
+              <div className="text-violet-400 mt-1 flex items-center gap-1">
+                <Activity className="w-3 h-3" />
+                <span>Analysis, Debug & Performance:</span>
+              </div>
+              <div><span className="text-crimson-400">query stability</span> - Get stability metric (0.0=chaos, 1.0=stable)</div>
+              <div><span className="text-crimson-400">query entropy</span> - Get system entropy metric</div>
+              <div><span className="text-crimson-400">query performance</span> - Show frame timing & compute stats</div>
+              <div><span className="text-crimson-400">benchmark</span> [--iterations=N] - Run benchmark suite (10 rule variations)</div>
+              <div><span className="text-crimson-400">profile</span> [--duration=N] - Profile WebGPU compute pipeline</div>
+              <div><span className="text-crimson-400">debug</span> - Show buffer states, memory layout & spatial hash</div>
+              <div><span className="text-crimson-400">simulate</span> [--fps=60] [--gpu] - Start real-time simulation</div>
             </div>
           </div>
 
@@ -300,8 +349,8 @@ export function CLI() {
               <div><span className="text-crimson-400">fs ls</span> [path] - List directory</div>
               <div><span className="text-crimson-400">fs cat</span> [file] - Display file contents</div>
               <div><span className="text-crimson-400">fs tree</span> - Show directory tree</div>
-              <div><span className="text-crimson-400">project list</span> - List all projects</div>
-              <div><span className="text-crimson-400">neofetch</span> - System information</div>
+              <div><span className="text-crimson-400">project list</span> - List all portfolio projects</div>
+              <div><span className="text-crimson-400">neofetch</span> - System information banner</div>
             </div>
           </div>
         </div>
@@ -398,40 +447,68 @@ export function CLI() {
       }
     }
 
-    // Cellular Automata commands
+    // EXPANDED Cellular Automata commands
     if (command === 'ca') {
       if (!subcommand) {
-        return <div className="text-crimson-400">Usage: ca &lt;command&gt; [args]. Type 'help' for details.</div>;
+        return <div className="text-crimson-400">Usage: ca &lt;command&gt; [args]. Type 'help' for comprehensive CA command reference.</div>;
       }
 
+      // Grid operations
       if (subcommand === 'grid') {
         const gridCmd = args[0];
         switch (gridCmd) {
           case 'init':
             const width = args[1] || '1920';
             const height = args[2] || '1080';
+            const useGpu = flags.gpu || true;
+            const cells = parseInt(width) * parseInt(height);
             return (
               <div className="space-y-2">
-                <div className="text-violet-400">Initializing CA Grid Engine...</div>
+                <div className="text-violet-400">Initializing Cellular Automata Grid Engine (Rust→WASM)...</div>
                 <div className="text-violet-300/80 text-sm space-y-1">
-                  <div>→ Allocating dual buffers ({width}×{height} = {(parseInt(width) * parseInt(height)).toLocaleString()} cells)</div>
-                  <div>→ Compiling WGSL compute shaders...</div>
-                  <div>→ Initializing WebGPU context...</div>
-                  <div>→ Building spatial hash map...</div>
-                  <div className="text-fuchsia-400 mt-2">Grid initialized! Memory: 48MB</div>
+                  <div>→ Grid dimensions: <span className="text-fuchsia-400">{width}×{height}</span> = <span className="text-crimson-400">{cells.toLocaleString()} cells</span></div>
+                  <div>→ Allocating dual-buffer ring (3 frames)...</div>
+                  <div className="pl-4 text-xs text-violet-300/60">
+                    • Buffer A: {(cells * 64 / 1024 / 1024).toFixed(1)}MB (compute)<br/>
+                    • Buffer B: {(cells * 64 / 1024 / 1024).toFixed(1)}MB (read)<br/>
+                    • Buffer C: {(cells * 64 / 1024 / 1024).toFixed(1)}MB (write)
+                  </div>
+                  <div>→ Compiling WGSL compute shaders (16×16 workgroups)...</div>
+                  <div>→ Initializing {useGpu ? 'WebGPU' : 'WebGL2'} context...</div>
+                  <div>→ Building O(1) spatial hash map...</div>
+                  <div>→ Configuring lock-free atomic buffer swapping...</div>
+                  <div className="text-fuchsia-400 mt-2">
+                    ✓ Grid initialized! Memory: <span className="text-crimson-400">{(cells * 64 * 3 / 1024 / 1024).toFixed(1)}MB</span> | Compute: <span className="text-crimson-400">{useGpu ? 'WebGPU' : 'CPU'}</span>
+                  </div>
                 </div>
               </div>
             );
 
           case 'step':
             const count = parseInt(flags.count as string) || 1;
+            const async = flags.async || false;
             return (
               <div className="space-y-2">
-                <div className="text-violet-400">Running {count} simulation step{count > 1 ? 's' : ''}...</div>
-                <div className="text-violet-300/80 text-sm">
-                  <div>Step 1: 342 cells changed | Stability: 0.89 | Entropy: 0.42</div>
-                  {count > 1 && <div>Step {count}: 127 cells changed | Stability: 0.94 | Entropy: 0.38</div>}
-                  <div className="text-fuchsia-400 mt-2">Average: 2.3ms/step ({Math.floor(1000/2.3)}fps)</div>
+                <div className="text-violet-400">Running {count} simulation step{count > 1 ? 's' : ''} {async ? '(async)' : ''}...</div>
+                <div className="text-violet-300/80 text-sm space-y-1">
+                  {[...Array(Math.min(count, 3))].map((_, i) => {
+                    const changedCells = Math.floor(Math.random() * 500 + 200);
+                    const stability = (0.85 + Math.random() * 0.1).toFixed(2);
+                    const entropy = (0.35 + Math.random() * 0.15).toFixed(2);
+                    return (
+                      <div key={i}>
+                        Step {i + 1}: <span className="text-crimson-400">{changedCells} cells changed</span> | 
+                        Stability: <span className="text-fuchsia-400">{stability}</span> | 
+                        Entropy: <span className="text-violet-400">{entropy}</span>
+                      </div>
+                    );
+                  })}
+                  {count > 3 && <div className="text-violet-300/60 text-xs">... {count - 3} more steps ...</div>}
+                  <div className="text-fuchsia-400 mt-2">
+                    Average: <span className="text-crimson-400">2.3ms/step</span> ({Math.floor(1000/2.3)}fps) | 
+                    {async && ' Promise returned'} | 
+                    Frame buffer swapped
+                  </div>
                 </div>
               </div>
             );
@@ -439,29 +516,100 @@ export function CLI() {
           case 'info':
             return (
               <div className="space-y-2">
-                <div className="text-violet-400">Grid Statistics:</div>
+                <div className="text-violet-400">Grid Statistics & Memory Layout:</div>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="space-y-1 text-violet-300/80">
+                    <div className="text-crimson-400">Grid Metrics</div>
                     <div>Dimensions: <span className="text-fuchsia-400">1920×1080</span></div>
                     <div>Total Cells: <span className="text-fuchsia-400">2,073,600</span></div>
-                    <div>Active Cells: <span className="text-fuchsia-400">842,341</span></div>
-                    <div>Stability: <span className="text-fuchsia-400">0.91</span></div>
+                    <div>Active Cells: <span className="text-fuchsia-400">842,341</span> (40.6%)</div>
+                    <div>Stable Cells: <span className="text-fuchsia-400">1,891,240</span> (91.2%)</div>
+                    <div>Stability Score: <span className="text-fuchsia-400">0.91</span></div>
+                    <div>System Entropy: <span className="text-fuchsia-400">0.38</span></div>
                   </div>
                   <div className="space-y-1 text-violet-300/80">
+                    <div className="text-crimson-400">Physics & Compute</div>
                     <div>Avg Energy: <span className="text-fuchsia-400">0.34</span></div>
                     <div>Avg Pressure: <span className="text-fuchsia-400">0.67</span></div>
                     <div>Wave Velocity: <span className="text-fuchsia-400">2.0</span></div>
-                    <div>GPU Compute: <span className="text-fuchsia-400">Active</span></div>
+                    <div>Energy Decay: <span className="text-fuchsia-400">0.98</span></div>
+                    <div>Friction Coeff: <span className="text-fuchsia-400">0.85</span></div>
+                    <div>GPU Compute: <span className="text-fuchsia-400">WebGPU Active</span></div>
+                  </div>
+                </div>
+                <div className="mt-3 p-3 bg-black/40 rounded border border-violet-500/20">
+                  <div className="text-xs text-violet-300/60 mb-2">Cell Memory Layout (repr(C, align(16))):</div>
+                  <pre className="text-xs text-fuchsia-400/80">{`struct Cell { // 64 bytes aligned
+  position: [f32; 2],  // 8 bytes
+  energy: f32,         // 4 bytes
+  state: u32,          // 4 bytes (bitfield)
+  influence: f32,      // 4 bytes
+  rule_id: u32,        // 4 bytes
+  pressure: f32,       // 4 bytes
+  velocity: [f32; 2],  // 8 bytes
+  _padding: [f32; 2],  // 8 bytes → 64 total
+}`}</pre>
+                </div>
+              </div>
+            );
+
+          case 'export':
+            const exportFile = args[1] || 'config/state-snapshot.bin';
+            return (
+              <div className="space-y-2">
+                <div className="text-violet-400">Exporting grid state snapshot...</div>
+                <div className="text-violet-300/80 text-sm space-y-1">
+                  <div>→ Serializing 2,073,600 cells × 64 bytes...</div>
+                  <div>→ Computing state checksum (CRC32)...</div>
+                  <div>→ Writing to: <span className="text-crimson-400">{exportFile}</span></div>
+                  <div className="text-fuchsia-400 mt-2">
+                    ✓ Exported 126MB binary snapshot | Checksum: <span className="text-violet-400">0xA4B91F3E</span>
+                  </div>
+                  <div className="text-violet-300/60 text-xs">
+                    Use <span className="text-crimson-400">ca grid import</span> for time-travel debugging
                   </div>
                 </div>
               </div>
             );
 
+          case 'import':
+            const importFile = args[1] || 'config/state-snapshot.bin';
+            return (
+              <div className="space-y-2">
+                <div className="text-violet-400">Importing grid state from snapshot...</div>
+                <div className="text-violet-300/80 text-sm space-y-1">
+                  <div>→ Reading: <span className="text-crimson-400">{importFile}</span></div>
+                  <div>→ Validating checksum... <span className="text-fuchsia-400">PASS (0xA4B91F3E)</span></div>
+                  <div>→ Deserializing 126MB → SharedArrayBuffer...</div>
+                  <div>→ Restoring cell states (zero-copy)...</div>
+                  <div className="text-fuchsia-400 mt-2">
+                    ✓ State restored! 2,073,600 cells loaded
+                  </div>
+                </div>
+              </div>
+            );
+
+          case 'query':
+            return (
+              <div className="space-y-2">
+                <div className="text-violet-400">Grid Query Results:</div>
+                <div className="text-violet-300/80 text-sm space-y-1">
+                  <div>Active Buffer: <span className="text-fuchsia-400">A</span> (compute) | Next: <span className="text-violet-400">B</span></div>
+                  <div>Cells Changed (last step): <span className="text-crimson-400">342</span></div>
+                  <div>Spatial Hash Buckets: <span className="text-fuchsia-400">1,024</span> (avg load: 2,026 cells/bucket)</div>
+                  <div>Frame Time: <span className="text-fuchsia-400">2.3ms</span> | Target: <span className="text-violet-400">16.67ms (60fps)</span></div>
+                  <div>GPU Utilization: <span className="text-fuchsia-400">34%</span></div>
+                  <div>Memory Pressure: <span className="text-fuchsia-400">Low</span> (126MB / 2GB available)</div>
+                </div>
+              </div>
+            );
+
           default:
-            return <div className="text-crimson-400">Unknown grid command: {gridCmd}</div>;
+            return <div className="text-crimson-400">Unknown grid command: {gridCmd}. Try: init, step, info, export, import, query</div>;
         }
       }
 
+      // Rule engine operations
       if (subcommand === 'rule') {
         const ruleCmd = args[0];
         switch (ruleCmd) {
@@ -469,63 +617,382 @@ export function CLI() {
             const file = args[1] || 'config/ca-rules.json';
             return (
               <div className="space-y-2">
-                <div className="text-violet-400">Loading rule: {file}</div>
+                <div className="text-violet-400">Loading rule configuration: {file}</div>
                 <div className="text-violet-300/80 text-sm space-y-1">
                   <div>→ Parsing JSON configuration...</div>
-                  <div>→ Validating transition rules...</div>
-                  <div>→ Compiling rule engine...</div>
-                  <div className="text-fuchsia-400 mt-2">Rule loaded: <span className="text-crimson-400">portfolio_ambient</span></div>
-                  <div className="text-violet-300/60 text-xs">3 transitions | Moore neighborhood | Parallel compute</div>
+                  <div>→ Validating transition rules (3 transitions)...</div>
+                  <div>→ Compiling neighbor kernels (Moore, radius=1)...</div>
+                  <div>→ Generating Rust transition functions...</div>
+                  <div>→ Linking to WASM module...</div>
+                  <div className="text-fuchsia-400 mt-2">
+                    ✓ Rule loaded: <span className="text-crimson-400">portfolio_ambient</span> (ID: <span className="text-violet-400">0x01</span>)
+                  </div>
+                  <div className="text-violet-300/60 text-xs">
+                    3 transitions | Moore(8) neighborhood | Parallel compute | Physics enabled
+                  </div>
                 </div>
               </div>
             );
 
           case 'validate':
+            const valFile = args[1] || 'config/ca-rules.json';
             return (
               <div className="space-y-2">
-                <div className="text-violet-400">Validating rules...</div>
+                <div className="text-violet-400">Validating rule schema: {valFile}</div>
                 <div className="text-violet-300/80 text-sm space-y-1">
-                  <div>✓ Schema valid</div>
-                  <div>✓ Transitions well-formed</div>
+                  <div>✓ JSON schema valid</div>
+                  <div>✓ All transitions well-formed</div>
                   <div>✓ Physics parameters in range</div>
-                  <div>✓ No circular dependencies</div>
-                  <div className="text-fuchsia-400 mt-2">Validation passed!</div>
+                  <div>✓ No circular state dependencies</div>
+                  <div>✓ Neighbor kernel valid (moore, radius=1)</div>
+                  <div>✓ Energy delta bounds checked</div>
+                  <div className="text-fuchsia-400 mt-2">Validation passed! Rule is compilable.</div>
+                </div>
+              </div>
+            );
+
+          case 'compile':
+            return (
+              <div className="space-y-2">
+                <div className="text-violet-400">Compiled Transition Table:</div>
+                <div className="p-3 bg-black/40 rounded border border-violet-500/20">
+                  <pre className="text-xs text-violet-300/80 overflow-x-auto whitespace-pre">{`Rule: portfolio_ambient (0x01)
+Compute Mode: PARALLEL
+Kernel: Moore(8-neighbor, radius=1)
+
+Transition Table:
+┌─────────────────────────────────────────────────────┐
+│ FROM         │ TO           │ CONDITION            │ ΔE   │
+├─────────────────────────────────────────────────────┤
+│ empty        │ growing      │ neighbors ∈ [2,3]    │ +0.3 │
+│ occupied     │ shrinking    │ pressure > 0.8       │ -0.1 │
+│ growing      │ stable       │ stable_for(10f, 0.05)│ 0.0  │
+└─────────────────────────────────────────────────────┘
+
+Physics Config:
+  pressure_coefficient: 1.2
+  wave_velocity: 2.0
+  energy_decay: 0.98 (per frame)
+  friction: 0.85`}</pre>
+                </div>
+              </div>
+            );
+
+          case 'list':
+            return (
+              <div className="space-y-2">
+                <div className="text-violet-400">Loaded Rules:</div>
+                <div className="space-y-2">
+                  <div className="p-2 bg-black/30 rounded border border-violet-500/20 text-sm">
+                    <div className="text-fuchsia-400">0x01: portfolio_ambient</div>
+                    <div className="text-xs text-violet-300/60 pl-4">
+                      3 transitions | Moore(8) | v1.0 | Active on 842,341 cells
+                    </div>
+                  </div>
+                  <div className="p-2 bg-black/30 rounded border border-crimson-500/20 text-sm">
+                    <div className="text-fuchsia-400">0x02: pressure_wave</div>
+                    <div className="text-xs text-violet-300/60 pl-4">
+                      5 transitions | Von Neumann(4) | v1.2 | Inactive
+                    </div>
+                  </div>
                 </div>
               </div>
             );
 
           default:
-            return <div className="text-crimson-400">Unknown rule command: {ruleCmd}</div>;
+            return <div className="text-crimson-400">Unknown rule command: {ruleCmd}. Try: load, validate, compile, list</div>;
         }
       }
 
+      // Cell operations
+      if (subcommand === 'cell') {
+        const cellCmd = args[0];
+        switch (cellCmd) {
+          case 'get':
+            const getX = args[1] || '960';
+            const getY = args[2] || '540';
+            return (
+              <div className="space-y-2">
+                <div className="text-violet-400">Cell Data at ({getX}, {getY}):</div>
+                <div className="p-3 bg-black/40 rounded border border-violet-500/20">
+                  <pre className="text-xs text-violet-300/80">{`Cell {
+  position: [${getX}.0, ${getY}.0],
+  energy: 0.74,
+  state: 0b00000011 (occupied=1, stable=1, type=1),
+  influence: 50.0,
+  rule_id: 0x01 (portfolio_ambient),
+  pressure: 0.82,
+  velocity: [1.2, -0.5],
+  _padding: [0.0, 0.0]
+}
+
+Neighbors (Moore-8): 6 active
+Last Updated: frame 1,247 (2.1s ago)`}</pre>
+                </div>
+              </div>
+            );
+
+          case 'set':
+            const setX = args[1] || '960';
+            const setY = args[2] || '540';
+            const setState = args[3] || '0b00000001';
+            return (
+              <div className="text-violet-300/80 text-sm">
+                Set cell at ({setX}, {setY}) → state={setState}
+                <div className="text-fuchsia-400 text-xs mt-1">
+                  ✓ Cell updated | Spatial hash refreshed | 8 neighbors notified
+                </div>
+              </div>
+            );
+
+          default:
+            return <div className="text-crimson-400">Unknown cell command: {cellCmd}. Try: get, set</div>;
+        }
+      }
+
+      // Region operations
+      if (subcommand === 'region') {
+        const regionCmd = args[0];
+        switch (regionCmd) {
+          case 'get':
+            const rx = args[1] || '100';
+            const ry = args[2] || '100';
+            const rw = args[3] || '50';
+            const rh = args[4] || '50';
+            const regionCells = parseInt(rw) * parseInt(rh);
+            return (
+              <div className="space-y-2">
+                <div className="text-violet-400">Region Data: ({rx}, {ry}) {rw}×{rh}</div>
+                <div className="text-violet-300/80 text-sm space-y-1">
+                  <div>→ Extracting {regionCells.toLocaleString()} cells...</div>
+                  <div>→ Converting to Float32Array ({(regionCells * 64).toLocaleString()} bytes)...</div>
+                  <div className="text-fuchsia-400 mt-2">
+                    ✓ Region extracted | Active cells: {Math.floor(regionCells * 0.4)} | Avg energy: 0.62
+                  </div>
+                </div>
+              </div>
+            );
+
+          case 'assign-rule':
+            const ruleId = args[1] || '0x01';
+            const arx = args[2] || '0';
+            const ary = args[3] || '0';
+            const arw = args[4] || '1920';
+            const arh = args[5] || '1080';
+            return (
+              <div className="text-violet-300/80 text-sm">
+                Assigning rule {ruleId} to region ({arx}, {ary}) {arw}×{arh}...
+                <div className="text-fuchsia-400 text-xs mt-1">
+                  ✓ {(parseInt(arw) * parseInt(arh)).toLocaleString()} cells updated | Rule engine reconfigured
+                </div>
+              </div>
+            );
+
+          default:
+            return <div className="text-crimson-400">Unknown region command: {regionCmd}. Try: get, assign-rule</div>;
+        }
+      }
+
+      // Inject energy
       if (subcommand === 'inject') {
         const x = args[0] || '960';
         const y = args[1] || '540';
         const energy = args[2] || '0.8';
-        return (
-          <div className="text-violet-300/80 text-sm">
-            Injected energy={energy} at ({x}, {y}) with radius=50
-            <div className="text-fuchsia-400 text-xs mt-1">Wave propagating... 234 cells affected</div>
-          </div>
-        );
-      }
-
-      if (subcommand === 'simulate') {
-        const fps = flags.fps || '60';
+        const radius = flags.radius || '50';
+        const affectedCells = Math.floor(Math.PI * parseInt(radius as string) ** 2);
         return (
           <div className="space-y-2">
-            <div className="text-violet-400">Starting real-time simulation @ {fps}fps</div>
+            <div className="text-violet-400">Injecting energy at ({x}, {y})</div>
             <div className="text-violet-300/80 text-sm">
-              <div>WebGPU compute pipeline active</div>
-              <div>Press Ctrl+C to stop</div>
-              <div className="text-fuchsia-400 mt-2">[Simulation running...]</div>
+              <div>Energy: <span className="text-fuchsia-400">{energy}</span> | Radius: <span className="text-crimson-400">{radius}px</span></div>
+              <div className="text-fuchsia-400 text-xs mt-1">
+                ✓ Wave propagating... <span className="text-crimson-400">{affectedCells}</span> cells affected | 
+                Velocity: 2.0px/frame
+              </div>
             </div>
           </div>
         );
       }
 
-      return <div className="text-crimson-400">Unknown ca command: {subcommand}</div>;
+      // Query operations
+      if (subcommand === 'query') {
+        const queryType = args[0];
+        switch (queryType) {
+          case 'stability':
+            return (
+              <div className="space-y-2">
+                <div className="text-violet-400">Stability Metric:</div>
+                <div className="text-violet-300/80 text-sm space-y-1">
+                  <div>Current: <span className="text-fuchsia-400">0.91</span> (Stable)</div>
+                  <div>Last 10 frames: <span className="text-violet-300/60">[0.89, 0.90, 0.91, 0.92, 0.91, 0.90, 0.91, 0.92, 0.91, 0.91]</span></div>
+                  <div>Trend: <span className="text-fuchsia-400">↑ Increasing</span> (+0.02 over 1s)</div>
+                  <div className="text-xs text-violet-300/60 mt-2">
+                    Stability: 0.0 = chaos (all cells changing), 1.0 = fully stable
+                  </div>
+                </div>
+              </div>
+            );
+
+          case 'entropy':
+            return (
+              <div className="space-y-2">
+                <div className="text-violet-400">System Entropy:</div>
+                <div className="text-violet-300/80 text-sm space-y-1">
+                  <div>Current: <span className="text-fuchsia-400">0.38</span></div>
+                  <div>State Distribution:</div>
+                  <div className="pl-4 text-xs space-y-0.5">
+                    <div>Empty: <span className="text-violet-400">58.4%</span></div>
+                    <div>Occupied: <span className="text-fuchsia-400">31.2%</span></div>
+                    <div>Growing: <span className="text-crimson-400">8.1%</span></div>
+                    <div>Stable: <span className="text-violet-400">2.3%</span></div>
+                  </div>
+                  <div className="text-xs text-violet-300/60 mt-2">
+                    Lower entropy = more ordered/predictable system
+                  </div>
+                </div>
+              </div>
+            );
+
+          case 'performance':
+            return (
+              <div className="space-y-2">
+                <div className="text-violet-400">Performance Statistics:</div>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="space-y-1 text-violet-300/80">
+                    <div className="text-crimson-400">Frame Timing</div>
+                    <div>Step Time: <span className="text-fuchsia-400">2.3ms</span> (avg)</div>
+                    <div>Min/Max: <span className="text-violet-400">1.8ms / 4.2ms</span></div>
+                    <div>Target (60fps): <span className="text-fuchsia-400">16.67ms</span></div>
+                    <div>Headroom: <span className="text-fuchsia-400">+14.37ms</span> (86%)</div>
+                  </div>
+                  <div className="space-y-1 text-violet-300/80">
+                    <div className="text-crimson-400">Compute Pipeline</div>
+                    <div>GPU Utilization: <span className="text-fuchsia-400">34%</span></div>
+                    <div>Workgroups: <span className="text-violet-400">7,680</span> (16×16)</div>
+                    <div>Shader Invocations: <span className="text-fuchsia-400">2.07M</span></div>
+                    <div>Buffer Swaps: <span className="text-violet-400">1,247</span></div>
+                  </div>
+                </div>
+              </div>
+            );
+
+          default:
+            return <div className="text-crimson-400">Unknown query type: {queryType}. Try: stability, entropy, performance</div>;
+        }
+      }
+
+      // Benchmark
+      if (subcommand === 'benchmark') {
+        const iterations = parseInt(flags.iterations as string) || 200000;
+        return (
+          <div className="space-y-2">
+            <div className="text-violet-400">Running CA Benchmark Suite ({iterations.toLocaleString()} iterations)...</div>
+            <div className="text-violet-300/80 text-sm space-y-2">
+              <div>→ Testing 10 rule variations...</div>
+              <div className="space-y-1 text-xs">
+                <div>Moore(8) + 3 transitions: <span className="text-fuchsia-400">2.1ms/step</span> (476fps)</div>
+                <div>Von Neumann(4) + 5 transitions: <span className="text-fuchsia-400">1.8ms/step</span> (555fps)</div>
+                <div>Moore(16) + 8 transitions: <span className="text-fuchsia-400">3.4ms/step</span> (294fps)</div>
+              </div>
+              <div className="text-fuchsia-400 mt-2">
+                ✓ Benchmark complete! Avg: <span className="text-crimson-400">2.4ms/step</span> | 
+                GPU Speedup: <span className="text-crimson-400">~18.3×</span> vs CPU
+              </div>
+              <div className="text-violet-300/60 text-xs">
+                All configurations meet 60fps target (16.67ms budget)
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // Profile
+      if (subcommand === 'profile') {
+        const duration = parseInt(flags.duration as string) || 5;
+        return (
+          <div className="space-y-2">
+            <div className="text-violet-400">Profiling WebGPU compute pipeline ({duration}s)...</div>
+            <div className="text-violet-300/80 text-sm space-y-1">
+              <div>→ Capturing GPU timeline...</div>
+              <div>→ Sampling shader invocations...</div>
+              <div>→ Analyzing buffer transfer overhead...</div>
+              <div className="mt-2 p-3 bg-black/40 rounded border border-violet-500/20">
+                <div className="text-xs space-y-1">
+                  <div className="text-crimson-400">Pipeline Breakdown:</div>
+                  <div>Shader Compute: <span className="text-fuchsia-400">1.8ms</span> (78%)</div>
+                  <div>Buffer Transfer: <span className="text-violet-400">0.3ms</span> (13%)</div>
+                  <div>CPU Overhead: <span className="text-violet-400">0.2ms</span> (9%)</div>
+                  <div className="text-fuchsia-400 mt-2">Total: 2.3ms/frame</div>
+                </div>
+              </div>
+              <div className="text-violet-300/60 text-xs">
+                Bottleneck: Shader compute (opportunity for optimization)
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // Debug
+      if (subcommand === 'debug') {
+        return (
+          <div className="space-y-2">
+            <div className="text-violet-400">CA Engine Debug Information:</div>
+            <div className="space-y-2 text-sm">
+              <div className="p-3 bg-black/40 rounded border border-violet-500/20">
+                <div className="text-crimson-400 mb-2">Buffer States:</div>
+                <div className="text-xs space-y-1 text-violet-300/80">
+                  <div>Active Buffer: <span className="text-fuchsia-400">A</span> (read/compute)</div>
+                  <div>Write Buffer: <span className="text-fuchsia-400">B</span> (GPU writing)</div>
+                  <div>Swap Queue: <span className="text-fuchsia-400">C</span> (ready)</div>
+                  <div>Lock Status: <span className="text-fuchsia-400">UNLOCKED</span> (atomic swap ready)</div>
+                </div>
+              </div>
+              <div className="p-3 bg-black/40 rounded border border-violet-500/20">
+                <div className="text-crimson-400 mb-2">Spatial Hash Map:</div>
+                <div className="text-xs space-y-1 text-violet-300/80">
+                  <div>Buckets: <span className="text-fuchsia-400">1,024</span> (32×32 grid)</div>
+                  <div>Avg Load: <span className="text-fuchsia-400">2,026 cells/bucket</span></div>
+                  <div>Max Load: <span className="text-violet-400">3,124 cells</span> (bucket 487)</div>
+                  <div>Lookup Time: <span className="text-fuchsia-400">O(1)</span> avg</div>
+                </div>
+              </div>
+              <div className="p-3 bg-black/40 rounded border border-violet-500/20">
+                <div className="text-crimson-400 mb-2">WASM Memory:</div>
+                <div className="text-xs space-y-1 text-violet-300/80">
+                  <div>Heap Size: <span className="text-fuchsia-400">126MB</span> / 2GB limit</div>
+                  <div>SharedArrayBuffer: <span className="text-fuchsia-400">ENABLED</span></div>
+                  <div>Zero-copy: <span className="text-fuchsia-400">ACTIVE</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // Simulate
+      if (subcommand === 'simulate') {
+        const fps = flags.fps || '60';
+        const useGpu = flags.gpu !== false;
+        return (
+          <div className="space-y-2">
+            <div className="text-violet-400">Starting Real-Time CA Simulation</div>
+            <div className="text-violet-300/80 text-sm space-y-1">
+              <div>Target FPS: <span className="text-fuchsia-400">{fps}</span></div>
+              <div>Compute Mode: <span className="text-crimson-400">{useGpu ? 'WebGPU' : 'CPU (rayon)'}</span></div>
+              <div>Grid: <span className="text-violet-400">1920×1080</span> (2.07M cells)</div>
+              <div className="text-fuchsia-400 mt-2">
+                [Simulation running... Press Ctrl+C to stop]
+              </div>
+              <div className="text-violet-300/60 text-xs">
+                Frame 1,247 | 2.3ms/frame | Stability: 0.91 | Entropy: 0.38
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      return <div className="text-crimson-400">Unknown ca command: {subcommand}. Type 'help' for full CA command reference.</div>;
     }
 
     // File system commands
@@ -567,7 +1034,8 @@ export function CLI() {
               <div className="text-fuchsia-400">/</div>
               <div>├── config/</div>
               <div>│   ├── site.yaml</div>
-              <div>│   └── ca-rules.json</div>
+              <div>│   ├── ca-rules.json</div>
+              <div>│   └── state-snapshot.bin</div>
               <div>└── projects/</div>
               <div>    ├── github-analysis.md</div>
               <div>    └── consim.md</div>
@@ -625,10 +1093,11 @@ export function CLI() {
               <div><span className="text-violet-400">OS:</span> Portfolio OS v3.0</div>
               <div><span className="text-violet-400">Kernel:</span> React + TypeScript + Rust/WASM</div>
               <div><span className="text-violet-400">Shell:</span> Advanced Multi-Suite CLI</div>
-              <div><span className="text-violet-400">Packages:</span> ssg, ca-engine, project-indexer</div>
+              <div><span className="text-violet-400">Packages:</span> ssg, ca-engine (WebGPU), project-indexer</div>
               <div><span className="text-violet-400">Theme:</span> Cyberpunk [Crimson/Violet]</div>
               <div><span className="text-violet-400">CPU:</span> Data Analysis + Software Dev Unit</div>
               <div><span className="text-violet-400">GPU:</span> WebGPU + PyTorch Compute</div>
+              <div><span className="text-violet-400">Memory:</span> 126MB CA Grid (2.07M cells)</div>
             </div>
           </div>
         </div>
@@ -638,23 +1107,27 @@ export function CLI() {
     if (command === 'about') {
       return (
         <div className="space-y-2">
-          <div className="text-fuchsia-400">Jacob C. Smith - Systems Portfolio</div>
+          <div className="text-fuchsia-400">Jacob C. Smith - Advanced Systems Portfolio</div>
           <div className="text-violet-300/80 text-sm">
-            This CLI demonstrates two sophisticated systems:
+            This CLI demonstrates two sophisticated engineering systems:
           </div>
           <div className="pl-4 space-y-2 text-sm">
             <div>
               <div className="text-crimson-400">1. Static Site Generator (Python)</div>
               <div className="text-violet-300/70 text-xs pl-4">
                 7-command suite: init, populate, build, dev, deploy, analyze<br/>
-                Rich terminal UI • Async architecture • Type-safe config
+                Rich terminal UI • Async architecture • Type-safe config<br/>
+                Lighthouse 98/100 • LCP: 0.8s • 124KB total size
               </div>
             </div>
             <div>
-              <div className="text-violet-400">2. Cellular Automata Engine (Rust/WASM)</div>
+              <div className="text-violet-400">2. Cellular Automata Engine (Rust→WASM + WebGPU)</div>
               <div className="text-violet-300/70 text-xs pl-4">
-                2M cells @ 60fps • WebGPU compute shaders • Rule engine<br/>
-                Real-time physics • Emergent behavior substrate
+                2.07M cells @ 60fps • Dual-buffer ring architecture<br/>
+                WebGPU compute shaders • JSON→compiled rule engine<br/>
+                Zero-copy SharedArrayBuffer • O(1) spatial hash<br/>
+                Sub-5ms latency • Real-time physics simulation<br/>
+                Time-travel debugging • Comprehensive profiling
               </div>
             </div>
           </div>
@@ -663,7 +1136,7 @@ export function CLI() {
     }
 
     // Fallback
-    return <div className="text-crimson-400">Command not found: {command}. Type 'help' for available commands.</div>;
+    return <div className="text-crimson-400">Command not found: {command}. Type 'help' for comprehensive command reference.</div>;
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -719,7 +1192,11 @@ export function CLI() {
           </div>
           <div className="flex items-center gap-1">
             <Grid3x3 className="w-3 h-3" />
-            <span>CA</span>
+            <span>CA (WASM)</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Cpu className="w-3 h-3" />
+            <span>WebGPU</span>
           </div>
           <div className="flex items-center gap-1">
             <Zap className="w-3 h-3 text-fuchsia-400" />
